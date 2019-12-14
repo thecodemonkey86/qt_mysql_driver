@@ -1,4 +1,4 @@
-Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in binary form, you have to build it on your own. Here is a build for Qt 5.13.1 / MSVC 2017 64-Bit 
+Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in binary form, you have to build it on your own. Here is a build for Qt 5.13.1 / MSVC 2017 64-Bit. Download from https://github.com/thecodemonkey86/qt_mysql_driver/releases
 
 Deployment
 
