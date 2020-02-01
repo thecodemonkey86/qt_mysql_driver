@@ -50,7 +50,6 @@
 //
 // We mean it.
 //
-#define _WINSOCKAPI_
 #include <QtSql/qsqldriver.h>
 
 #if defined (Q_OS_WIN32)
