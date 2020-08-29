@@ -1,3 +1,12 @@
+Typical symptom when trying to connect to MySQL / MariaDB using Qt but without the necessary plugin is the runtime error 
+
+
+<pre><code>
+ QSqlDatabase: QMYSQL driver not loaded
+ QSqlDatabase: available drivers: QMYSQL
+</code></pre>
+
+
 Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in binary form, you have to build it on your own, which can be a pain. Here is a build for various Qt versions. Download precompiled qsqlmysql.dll from https://github.com/thecodemonkey86/qt_mysql_driver/releases
 
 Deployment
