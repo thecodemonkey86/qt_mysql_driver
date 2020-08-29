@@ -11,10 +11,12 @@ Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in
 
 Deployment
 
-1) put qsqlmysql.dll (Release) / qsqlmysqld.dll (Debug) in application subdirectory "sqldrivers" 
+1) put qsqlmysql.dll (if release build) / qsqlmysqld.dll (if debug build) in application subdirectory "sqldrivers" 
 2) put libmysql.dll (the MySQL library itself) in your application dir 
 
- 
+
+
+If you want to use this repository for compiling it yourself:
 Building hints
 - Unlike the original .pro file this project can be built in Qt Creator, the source code is however unchanged
 - See branches by Qt version for source code
