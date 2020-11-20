@@ -10,15 +10,15 @@ Typical symptom when trying to connect to MySQL / MariaDB using Qt but without t
 Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in binary form, you have to build it on your own, which can be a pain. Here is a build for various Qt versions. Get precompiled qsqlmysql.dll from <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases">releases</a>
 
 <b>
-Download for Qt 5.15.1 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.1_mysql8">here</a>
+Latest Qt version: Download for Qt 5.15.2 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.2">here</a>
 </b>
 <br>
 
 
 Deployment
 
-1) put qsqlmysql.dll (if release build) / qsqlmysqld.dll (if debug build) in application subdirectory "sqldrivers" 
-2) put libmysql.dll (the MySQL library itself) in your application dir 
+1) put qsqlmysql.dll (if release build) / qsqlmysqld.dll (if debug build, but note that when using MinGW 8.1.0 the debug build is named qsqlmysql.dll as well) in application subdirectory "sqldrivers" 
+2) put libmysql.dll (the MySQL library itself) and the OpenSSL v1.1 libraries, libcrypto-1_1 and libssl-1_1, in your application dir 
 
 
 
