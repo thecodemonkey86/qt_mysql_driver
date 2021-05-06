@@ -317,15 +317,14 @@ void QMYSQLResultPrivate::bindBlobs()
 
 bool QMYSQLResultPrivate::bindInValues()
 {
-    MYSQL_BIND *bind;
-    char *field;
-    int i = 0;
-
     if (!meta)
         meta = mysql_stmt_result_metadata(stmt);
     if (!meta)
         return false;
 
+    MYSQL_BIND *bind;
+    char *field;
+    int i = 0;
     fields.resize(mysql_num_fields(meta));
 
     inBinds = new MYSQL_BIND[fields.size()];
@@ -873,7 +872,6 @@ bool QMYSQLResult::exec()
         return false;
 
     int r = 0;
-    MYSQL_BIND* currBind;
     QList<MYSQL_TIME *> timeVector;
     QList<QByteArray> stringVector;
     QList<my_bool> nullVector;
@@ -895,7 +893,7 @@ bool QMYSQLResult::exec()
             const QVariant &val = boundValues().at(i);
             void *data = const_cast<void *>(val.constData());
 
-            currBind = &d->outBinds[i];
+            MYSQL_BIND* currBind = &d->outBinds[i];
 
             nullVector[i] = static_cast<my_bool>(val.isNull());
             currBind->is_null = &nullVector[i];
