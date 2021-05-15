@@ -7,7 +7,7 @@ Typical symptom when trying to connect to MySQL / MariaDB using Qt but without t
 </code></pre>
 
 
-Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll in binary form, you have to build it on your own, which can be a pain. Here is a build for various Qt versions. Get precompiled qsqlmysql.dll from <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases">releases</a>
+Since the Qt Company currently doesn't give a crap on providing qsqlmysql.dll / libqsqlmysql.so in binary form, you have to build it on your own, which can be a pain. Here is a build for various Qt versions. Get precompiled qsqlmysql.dll for Windows / libqsqlmysql.so for Linux from <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases">releases</a>
 
 <b>
 Latest Qt version: Download for Qt 6.1.0 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.1.0">here</a>
