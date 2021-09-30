@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(QMYSQLDriverPlugin
     OUTPUT_NAME qsqlmysql
-    TYPE sqldrivers
+    PLUGIN_TYPE sqldrivers
     SOURCES
         main.cpp
         qsql_mysql.cpp qsql_mysql_p.h
@@ -22,3 +22,5 @@ qt_internal_add_plugin(QMYSQLDriverPlugin
 
 #### Keys ignored in scope 1:.:.:mysql.pro:<TRUE>:
 # OTHER_FILES = "mysql.json"
+
+qt_internal_force_macos_intel_arch(QMYSQLDriverPlugin)
