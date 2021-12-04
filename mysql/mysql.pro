@@ -2,7 +2,9 @@ TARGET = qsqlmysql
 
 HEADERS += $$PWD/qsql_mysql_p.h
 SOURCES += $$PWD/qsql_mysql.cpp $$PWD/main.cpp
-
+gcc{
+DEFINES += NTDDI_VERSION=0x06000000
+}
 #QMAKE_USE += mysql
 
 OTHER_FILES += mysql.json
