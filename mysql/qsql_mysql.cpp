@@ -303,6 +303,13 @@ static bool qIsBlob(int t)
            || t == MYSQL_TYPE_LONG_BLOB;
 }
 
+static bool qIsTimeOrDate(int t)
+{
+    // *not* MYSQL_TYPE_TIME because its range is bigger than QTime
+    // (see above)
+    return t == MYSQL_TYPE_DATE || t == MYSQL_TYPE_DATETIME || t == MYSQL_TYPE_TIMESTAMP;
+}
+
 static bool qIsInteger(int t)
 {
     return t == QMetaType::Char || t == QMetaType::UChar
@@ -354,6 +361,8 @@ bool QMYSQLResultPrivate::bindInValues()
             // after mysql_stmt_exec() in QMYSQLResult::exec()
             bind->buffer_length = f.bufLength = 0;
             hasBlobs = true;
+        } else if (qIsTimeOrDate(fieldInfo->type)) {
+            bind->buffer_length = f.bufLength = sizeof(MYSQL_TIME);
         } else if (qIsInteger(f.type.id())) {
             bind->buffer_length = f.bufLength = 8;
         } else {
@@ -364,8 +373,10 @@ bool QMYSQLResultPrivate::bindInValues()
         bind->length = &f.bufLength;
         bind->is_unsigned = fieldInfo->flags & UNSIGNED_FLAG ? 1 : 0;
 
-        char *field = new char[bind->buffer_length + 1]{};
+        char *field = bind->buffer_length ? new char[bind->buffer_length + 1]{} : nullptr;
         bind->buffer = f.outField = field;
+        if (qIsTimeOrDate(fieldInfo->type))
+            new (field) MYSQL_TIME;
 
         ++i;
     }
@@ -416,9 +427,11 @@ void QMYSQLResult::cleanup()
         d->meta = 0;
     }
 
-    int i;
-    for (i = 0; i < d->fields.count(); ++i)
-        delete[] d->fields[i].outField;
+    for (const auto &field : qAsConst(d->fields)) {
+        if (qIsTimeOrDate(field.myField->type))
+            reinterpret_cast<MYSQL_TIME *>(field.outField)->~MYSQL_TIME();
+        delete[] field.outField;
+    }
 
     if (d->outBinds) {
         delete[] d->outBinds;
@@ -557,6 +570,20 @@ QVariant QMYSQLResult::data(int field)
             else if (f.type.id() == QMetaType::Char)
                 return variant.toInt();
             return variant;
+        } else if (qIsTimeOrDate(f.myField->type) && f.bufLength == sizeof(MYSQL_TIME)) {
+            auto t = reinterpret_cast<const MYSQL_TIME *>(f.outField);
+            QDate date;
+            QTime time;
+            if (f.type.id() != QMetaType::QTime)
+                date = QDate(t->year, t->month, t->day);
+            if (f.type.id() != QMetaType::QDate)
+                time = QTime(t->hour, t->minute, t->second, t->second_part / 1000);
+            if (f.type.id() == QMetaType::QDateTime)
+                return QDateTime(date, time);
+            else if (f.type.id() == QMetaType::QDate)
+                return date;
+            else
+                return time;
         }
 
         if (f.type.id() != QMetaType::QByteArray)
@@ -1485,7 +1512,21 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
             } else {
                 qWarning("QMYSQLDriver::formatValue: Database not open");
             }
-            // fall through
+            Q_FALLTHROUGH();
+        case QMetaType::QDateTime:
+            if (QDateTime dt = field.value().toDateTime(); dt.isValid()) {
+                // MySQL format doesn't like the "Z" at the end, but does allow
+                // "+00:00" starting in version 8.0.19. However, if we got here,
+                // it's because the MySQL server is too old for prepared queries
+                // in the first place, so it won't understand timezones either.
+                // Besides, MYSQL_TIME does not support timezones, so match it.
+                r = QLatin1Char('\'') +
+                        dt.date().toString(Qt::ISODate) +
+                        QLatin1Char('T') +
+                        dt.time().toString(Qt::ISODate) +
+                        QLatin1Char('\'');
+            }
+            break;
         default:
             r = QSqlDriver::formatValue(field, trimStrings);
         }
