@@ -428,7 +428,7 @@ void QMYSQLResult::cleanup()
     }
 
     for (const auto &field : qAsConst(d->fields)) {
-        if (qIsTimeOrDate(field.myField->type))
+        if (field.myField!=nullptr&& qIsTimeOrDate(field.myField->type))
             reinterpret_cast<MYSQL_TIME *>(field.outField)->~MYSQL_TIME();
         delete[] field.outField;
     }
