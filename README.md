@@ -27,7 +27,7 @@ Latest Qt version: Download for Qt 6.3.1 <a href="https://github.com/thecodemonk
 for MSVC:
 
 Prerequisites:
-1. Install MSVC Compiler (from Visual Studio 2022 Setup)
+1. Install MSVC Compiler (from [Visual Studio 2022 Setup](https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022&source=VSLandingPage&includeRecommended=true&cid=2030))
 2. Install Qt incl. Sources, CMake and Ninja from Maintenance Tool
 3. Install MySQL library, e.g. by using [Oracle's Installer](https://dev.mysql.com/downloads/installer/) or use the zip file from [here](https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/libmysql)
 
