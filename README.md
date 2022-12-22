@@ -11,7 +11,7 @@ Since the Qt Company cannot provide qsqlmysql.dll / libqsqlmysql.so in binary fo
 
 <b>
 Latest Qt6 version: Download for Qt 6.4.1 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.4.1">here</a><br>
-Latest open source Qt5 version: Download for Qt 5.15.5 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.5">here</a>
+Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a>
 </b>
 <br>
 
