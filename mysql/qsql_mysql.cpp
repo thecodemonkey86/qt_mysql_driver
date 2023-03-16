@@ -29,9 +29,25 @@ Q_DECLARE_METATYPE(MYSQL_RES*)
 Q_DECLARE_METATYPE(MYSQL*)
 Q_DECLARE_METATYPE(MYSQL_STMT*)
 
+// MYSQL_TYPE_JSON was introduced with MySQL 5.7.9
+#if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID < 50709
+#define MYSQL_TYPE_JSON  245
+#endif
+
 // MySQL above version 8 removed my_bool typedef while MariaDB kept it,
 // by redefining it we can regain source compatibility.
 using my_bool = decltype(mysql_stmt_bind_result(nullptr, nullptr));
+
+// this is a copy of the old MYSQL_TIME before an additional integer was added in
+// 8.0.27.0. This kills the sanity check during retrieving this struct from mysql
+// when another libmysql version is used during runtime than during compile time
+struct QT_MYSQL_TIME
+{
+    unsigned int year, month, day, hour, minute, second;
+    unsigned long second_part; /**< microseconds */
+    my_bool neg;
+    enum enum_mysql_timestamp_type time_type;
+};
 
 QT_BEGIN_NAMESPACE
 
@@ -80,7 +96,7 @@ static inline QVariant qDateTimeFromString(QString &val)
 #else
     if (val.isEmpty())
         return QVariant(QDateTime());
-    if (val.length() == 14)
+    if (val.size() == 14)
         // TIMESTAMPS have the format yyyyMMddhhmmss
         val.insert(4, u'-').insert(7, u'-').insert(10, u'T').insert(13, u':').insert(16, u':');
     return QVariant(QDateTime::fromString(val, Qt::ISODate));
@@ -181,58 +197,59 @@ static QSqlError qMakeError(const QString& err, QSqlError::ErrorType type,
 }
 
 
-static QMetaType qDecodeMYSQLType(int mysqltype, uint flags)
+static QMetaType qDecodeMYSQLType(enum_field_types mysqltype, uint flags)
 {
     QMetaType::Type type;
     switch (mysqltype) {
-    case FIELD_TYPE_TINY :
+    case MYSQL_TYPE_TINY:
         type = (flags & UNSIGNED_FLAG) ? QMetaType::UChar : QMetaType::Char;
         break;
-    case FIELD_TYPE_SHORT :
+    case MYSQL_TYPE_SHORT:
         type = (flags & UNSIGNED_FLAG) ? QMetaType::UShort : QMetaType::Short;
         break;
-    case FIELD_TYPE_LONG :
-    case FIELD_TYPE_INT24 :
+    case MYSQL_TYPE_LONG:
+    case MYSQL_TYPE_INT24:
         type = (flags & UNSIGNED_FLAG) ? QMetaType::UInt : QMetaType::Int;
         break;
-    case FIELD_TYPE_YEAR :
+    case MYSQL_TYPE_YEAR:
         type = QMetaType::Int;
         break;
-    case FIELD_TYPE_LONGLONG :
+    case MYSQL_TYPE_LONGLONG:
         type = (flags & UNSIGNED_FLAG) ? QMetaType::ULongLong : QMetaType::LongLong;
         break;
-    case FIELD_TYPE_FLOAT :
-    case FIELD_TYPE_DOUBLE :
-    case FIELD_TYPE_DECIMAL :
-#if defined(FIELD_TYPE_NEWDECIMAL)
-    case FIELD_TYPE_NEWDECIMAL:
-#endif
+    case MYSQL_TYPE_FLOAT:
+    case MYSQL_TYPE_DOUBLE:
+    case MYSQL_TYPE_DECIMAL:
+    case MYSQL_TYPE_NEWDECIMAL:
         type = QMetaType::Double;
         break;
-    case FIELD_TYPE_DATE :
+    case MYSQL_TYPE_DATE:
         type = QMetaType::QDate;
         break;
-    case FIELD_TYPE_TIME :
+    case MYSQL_TYPE_TIME:
         // A time field can be within the range '-838:59:59' to '838:59:59' so
         // use QString instead of QTime since QTime is limited to 24 hour clock
         type = QMetaType::QString;
         break;
-    case FIELD_TYPE_DATETIME :
-    case FIELD_TYPE_TIMESTAMP :
+    case MYSQL_TYPE_DATETIME:
+    case MYSQL_TYPE_TIMESTAMP:
         type = QMetaType::QDateTime;
         break;
-    case FIELD_TYPE_STRING :
-    case FIELD_TYPE_VAR_STRING :
-    case FIELD_TYPE_BLOB :
-    case FIELD_TYPE_TINY_BLOB :
-    case FIELD_TYPE_MEDIUM_BLOB :
-    case FIELD_TYPE_LONG_BLOB :
-    case FIELD_TYPE_GEOMETRY :
+    case MYSQL_TYPE_STRING:
+    case MYSQL_TYPE_VAR_STRING:
+    case MYSQL_TYPE_BLOB:
+    case MYSQL_TYPE_TINY_BLOB:
+    case MYSQL_TYPE_MEDIUM_BLOB:
+    case MYSQL_TYPE_LONG_BLOB:
+    case MYSQL_TYPE_GEOMETRY:
+    case MYSQL_TYPE_JSON:
         type = (flags & BINARY_FLAG) ? QMetaType::QByteArray : QMetaType::QString;
         break;
-    default:
-    case FIELD_TYPE_ENUM :
-    case FIELD_TYPE_SET :
+    case MYSQL_TYPE_ENUM:
+    case MYSQL_TYPE_SET:
+        type = QMetaType::QString;
+        break;
+    default:  // needed because there are more enum values which are not available in all headers
         type = QMetaType::QString;
         break;
     }
@@ -242,7 +259,7 @@ static QMetaType qDecodeMYSQLType(int mysqltype, uint flags)
 static QSqlField qToField(MYSQL_FIELD *field)
 {
     QSqlField f(QString::fromUtf8(field->name),
-                qDecodeMYSQLType(int(field->type), field->flags),
+                qDecodeMYSQLType(field->type, field->flags),
                 QString::fromUtf8(field->table));
     f.setRequired(IS_NOT_NULL(field->flags));
     f.setLength(field->length);
@@ -261,15 +278,16 @@ static QSqlError qMakeStmtError(const QString& err, QSqlError::ErrorType type,
                      type, QString::number(mysql_stmt_errno(stmt)));
 }
 
-static bool qIsBlob(int t)
+static bool qIsBlob(enum_field_types t)
 {
     return t == MYSQL_TYPE_TINY_BLOB
            || t == MYSQL_TYPE_BLOB
            || t == MYSQL_TYPE_MEDIUM_BLOB
-           || t == MYSQL_TYPE_LONG_BLOB;
+           || t == MYSQL_TYPE_LONG_BLOB
+           || t == MYSQL_TYPE_JSON;
 }
 
-static bool qIsTimeOrDate(int t)
+static bool qIsTimeOrDate(enum_field_types t)
 {
     // *not* MYSQL_TYPE_TIME because its range is bigger than QTime
     // (see above)
@@ -286,7 +304,7 @@ static bool qIsInteger(int t)
 
 void QMYSQLResultPrivate::bindBlobs()
 {
-    for (int i = 0; i < fields.count(); ++i) {
+    for (int i = 0; i < fields.size(); ++i) {
         const MYSQL_FIELD *fieldInfo = fields.at(i).myField;
         if (qIsBlob(inBinds[i].buffer_type) && meta && fieldInfo) {
             MYSQL_BIND *bind = &inBinds[i];
@@ -328,7 +346,7 @@ bool QMYSQLResultPrivate::bindInValues()
             bind->buffer_length = f.bufLength = 0;
             hasBlobs = true;
         } else if (qIsTimeOrDate(fieldInfo->type)) {
-            bind->buffer_length = f.bufLength = sizeof(MYSQL_TIME);
+            bind->buffer_length = f.bufLength = sizeof(QT_MYSQL_TIME);
         } else if (qIsInteger(f.type.id())) {
             bind->buffer_length = f.bufLength = 8;
         } else {
@@ -392,7 +410,7 @@ void QMYSQLResult::cleanup()
     }
 
     int i;
-    for (i = 0; i < d->fields.count(); ++i)
+    for (i = 0; i < d->fields.size(); ++i)
         delete[] d->fields[i].outField;
 
     if (d->outBinds) {
@@ -509,7 +527,7 @@ bool QMYSQLResult::fetchFirst()
 QVariant QMYSQLResult::data(int field)
 {
     Q_D(QMYSQLResult);
-    if (!isSelect() || field >= d->fields.count()) {
+    if (!isSelect() || field >= d->fields.size()) {
         qWarning("QMYSQLResult::data: column %d out of range", field);
         return QVariant();
     }
@@ -532,8 +550,8 @@ QVariant QMYSQLResult::data(int field)
             else if (f.type.id() == QMetaType::Char)
                 return variant.toInt();
             return variant;
-        } else if (qIsTimeOrDate(f.myField->type) && f.bufLength == sizeof(MYSQL_TIME)) {
-            auto t = reinterpret_cast<const MYSQL_TIME *>(f.outField);
+        } else if (qIsTimeOrDate(f.myField->type) && f.bufLength >= sizeof(QT_MYSQL_TIME)) {
+            auto t = reinterpret_cast<const QT_MYSQL_TIME *>(f.outField);
             QDate date;
             QTime time;
             if (f.type.id() != QMetaType::QTime)
@@ -625,7 +643,7 @@ QVariant QMYSQLResult::data(int field)
 bool QMYSQLResult::isNull(int field)
 {
    Q_D(const QMYSQLResult);
-   if (field < 0 || field >= d->fields.count())
+   if (field < 0 || field >= d->fields.size())
        return true;
    if (d->preparedQuery)
        return d->fields.at(field).nullIndicator;
@@ -644,7 +662,7 @@ bool QMYSQLResult::reset (const QString& query)
     cleanup();
 
     const QByteArray encQuery = query.toUtf8();
-    if (mysql_real_query(d->drv_d_func()->mysql, encQuery.data(), encQuery.length())) {
+    if (mysql_real_query(d->drv_d_func()->mysql, encQuery.data(), encQuery.size())) {
         setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to execute query"),
                      QSqlError::StatementError, d->drv_d_func()));
         return false;
@@ -752,7 +770,7 @@ bool QMYSQLResult::nextResult()
     d->result = 0;
     setSelect(false);
 
-    for (int i = 0; i < d->fields.count(); ++i)
+    for (int i = 0; i < d->fields.size(); ++i)
         delete[] d->fields[i].outField;
     d->fields.clear();
 
@@ -793,13 +811,12 @@ void QMYSQLResult::virtual_hook(int id, void *data)
     QSqlResult::virtual_hook(id, data);
 }
 
-static MYSQL_TIME *toMySqlDate(QDate date, QTime time, int type)
+static QT_MYSQL_TIME *toMySqlDate(QDate date, QTime time, int type)
 {
     Q_ASSERT(type == QMetaType::QTime || type == QMetaType::QDate
              || type == QMetaType::QDateTime);
 
-    MYSQL_TIME *myTime = new MYSQL_TIME;
-    memset(myTime, 0, sizeof(MYSQL_TIME));
+    auto myTime = new QT_MYSQL_TIME{};
 
     if (type == QMetaType::QTime || type == QMetaType::QDateTime) {
         myTime->hour = time.hour();
@@ -840,7 +857,7 @@ bool QMYSQLResult::prepare(const QString& query)
     }
 
     const QByteArray encQuery = query.toUtf8();
-    r = mysql_stmt_prepare(d->stmt, encQuery.constData(), encQuery.length());
+    r = mysql_stmt_prepare(d->stmt, encQuery.constData(), encQuery.size());
     if (r != 0) {
         setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
                      "Unable to prepare statement"), QSqlError::StatementError, d->stmt));
@@ -868,7 +885,7 @@ bool QMYSQLResult::exec()
         return false;
 
     int r = 0;
-    QList<MYSQL_TIME *> timeVector;
+    QList<QT_MYSQL_TIME *> timeVector;
     QList<QByteArray> stringVector;
     QList<my_bool> nullVector;
 
@@ -882,10 +899,10 @@ bool QMYSQLResult::exec()
     }
 
     if (mysql_stmt_param_count(d->stmt) > 0 &&
-        mysql_stmt_param_count(d->stmt) == (uint)values.count()) {
+        mysql_stmt_param_count(d->stmt) == (uint)values.size()) {
 
-        nullVector.resize(values.count());
-        for (int i = 0; i < values.count(); ++i) {
+        nullVector.resize(values.size());
+        for (int i = 0; i < values.size(); ++i) {
             const QVariant &val = boundValues().at(i);
             void *data = const_cast<void *>(val.constData());
 
@@ -906,7 +923,7 @@ bool QMYSQLResult::exec()
                 case QMetaType::QTime:
                 case QMetaType::QDate:
                 case QMetaType::QDateTime: {
-                    MYSQL_TIME *myTime = toMySqlDate(val.toDate(), val.toTime(), val.userType());
+                    QT_MYSQL_TIME *myTime = toMySqlDate(val.toDate(), val.toTime(), val.userType());
                     timeVector.append(myTime);
 
                     currBind->buffer = myTime;
@@ -926,7 +943,7 @@ bool QMYSQLResult::exec()
                     default:
                         break;
                     }
-                    currBind->buffer_length = sizeof(MYSQL_TIME);
+                    currBind->buffer_length = sizeof(QT_MYSQL_TIME);
                     currBind->length = 0;
                     break; }
                 case QMetaType::UInt:
@@ -960,7 +977,7 @@ bool QMYSQLResult::exec()
                     stringVector.append(ba);
                     currBind->buffer_type = MYSQL_TYPE_STRING;
                     currBind->buffer = const_cast<char *>(ba.constData());
-                    currBind->buffer_length = ba.length();
+                    currBind->buffer_length = ba.size();
                     break; }
             }
         }
@@ -1178,7 +1195,7 @@ bool QMYSQLDriver::open(const QString& db,
     uint writeTimeout = 0;
 
     // extract the real options from the string
-    for (int i = 0; i < opts.count(); ++i) {
+    for (int i = 0; i < opts.size(); ++i) {
         QString tmp(opts.at(i).simplified());
         qsizetype idx;
         if ((idx = tmp.indexOf(u'=')) != -1) {
