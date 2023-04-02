@@ -1,4 +1,5 @@
-# Generated from mysql.pro.
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QMYSQLDriverPlugin Plugin:
@@ -19,8 +20,5 @@ qt_internal_add_plugin(QMYSQLDriverPlugin
         Qt::CorePrivate
         Qt::SqlPrivate
 )
-
-#### Keys ignored in scope 1:.:.:mysql.pro:<TRUE>:
-# OTHER_FILES = "mysql.json"
 
 qt_internal_force_macos_intel_arch(QMYSQLDriverPlugin)
