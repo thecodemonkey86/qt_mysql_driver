@@ -14,16 +14,20 @@ This is helpful to you? Feel free to show a little appreciation by <a href="http
 <a href="https://www.paypal.com/donate/?hosted_button_id=2K7H59EFMSRDU"><img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/02524397-e7f7-47ca-be6b-7c8d3a3b5b32"></a>
 
 <b>
-Latest Qt6 version: Download for Qt 6.5.1 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.5.1">here</a><br>
+Latest Qt6 version: Download for Qt 6.5.2 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.5.2">here</a><br>
 Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a>
 </b>
 <br>
 
 
 <h4>Deployment</h4>
+1) copy qsqlmysql.dll (release build) / MSVC: qsqlmysqld.dll, MinGW: qsqlmysql.dll+qsqlmysql.debug (debug build) to subdirectory "sqldrivers" of (or build  while developing) 
+ <img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/ad400ff5-04b2-40f0-b9ab-b72f89168ebd"/>
 
-1) put qsqlmysql.dll / qsqlmysqld.dll in application subdirectory "sqldrivers" 
-2) put libmysql.dll (the MySQL library itself) and the OpenSSL v1.1 libraries, libcrypto-1_1 and libssl-1_1, in your application dir 
+2) copy libmysql.dll (MySQL library) and the libcrypto/libssl OpenSSL libraries from zip file (or from https://dev.mysql.com and https://kb.firedaemon.com/support/solutions/articles/4000121705  respectively) to application directory (or more generally, any directory that is registered in PATH environment variable)
+
+ <img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/8a894abf-bd6a-4016-853d-4e210e2c23bb"/>
+
 
 <hr>
 <h4>Building from source (Qt6/CMake)</h4>
