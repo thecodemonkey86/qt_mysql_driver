@@ -21,7 +21,7 @@ Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.c
 
 
 <h4>Deployment</h4>
-1) copy qsqlmysql.dll (release build) / MSVC: qsqlmysqld.dll, MinGW: qsqlmysql.dll+qsqlmysql.debug (debug build) to subdirectory "sqldrivers" of (or build  while developing) 
+1) copy qsqlmysql.dll (release build) / MSVC: qsqlmysqld.dll, MinGW: qsqlmysql.dll+qsqlmysql.debug (debug build) to subdirectory "sqldrivers" of application directory (or build directory while developing) 
  <img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/ad400ff5-04b2-40f0-b9ab-b72f89168ebd"/>
 
 2) copy libmysql.dll (MySQL library) and the libcrypto/libssl OpenSSL libraries from zip file (or from https://dev.mysql.com and https://kb.firedaemon.com/support/solutions/articles/4000121705  respectively) to application directory (or more generally, any directory that is registered in PATH environment variable)
