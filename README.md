@@ -15,12 +15,14 @@ This is helpful to you? Feel free to show a little appreciation by <a href="http
 
 <b>
 Latest Qt6 version: Download for Qt 6.5.2 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.5.2">here</a><br>
-Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a>
+Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a><br>
+For Android see 3rd party repository https://github.com/sayyyed/qt_android_mysql_driver/releases/tag/qt_mysql_driver_for_android
 </b>
 <br>
 
 
 <h4>Deployment</h4>
+
 1) copy qsqlmysql.dll (release build) / MSVC: qsqlmysqld.dll, MinGW: qsqlmysql.dll+qsqlmysql.debug (debug build) to subdirectory "sqldrivers" of application directory (or build directory while developing) 
  <img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/ad400ff5-04b2-40f0-b9ab-b72f89168ebd"/>
 
