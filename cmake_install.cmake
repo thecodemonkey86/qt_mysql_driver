@@ -1,8 +1,8 @@
-# Install script for directory: C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers
+# Install script for directory: C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Qt/Qt5.12/6.4.0/mingw_64")
+  set(CMAKE_INSTALL_PREFIX "C:/Qt/Qt5.12/6.5.3/msvc2019_64")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "RelWithDebInfo")
+    set(CMAKE_INSTALL_CONFIG_NAME "Release")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -34,27 +34,27 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Qt/Qt5.12/Tools/mingw1120_64/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "CMAKE_OBJDUMP-NOTFOUND")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers/psql/cmake_install.cmake")
+  include("C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/psql/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers/mysql/cmake_install.cmake")
+  include("C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers/odbc/cmake_install.cmake")
+  include("C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/odbc/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers/sqlite/cmake_install.cmake")
+  include("C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/sqlite/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -65,5 +65,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Qt/Qt5.12/6.4.0/Src/qtbase/src/plugins/sqldrivers/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

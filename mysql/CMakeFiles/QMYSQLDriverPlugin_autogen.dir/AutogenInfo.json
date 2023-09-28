@@ -1,0 +1,113 @@
+{
+	"BUILD_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/QMYSQLDriverPlugin_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql",
+	"CMAKE_EXECUTABLE" : "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
+	"CMAKE_LIST_FILES" : 
+	[
+		"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeLists.txt",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/lib/cmake/Qt6/QtPluginConfig.cmake.in",
+		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.26/Modules/BasicConfigVersion-AnyNewerVersion.cmake.in",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/lib/cmake/Qt6/QtCMakePackageVersionFile.cmake.in",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/lib/cmake/Qt6/QtFileConfigure.txt.in"
+	],
+	"CMAKE_SOURCE_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers",
+	"DEP_FILE" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/QMYSQLDriverPlugin_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "QMYSQLDriverPlugin_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/qsql_mysql_p.h",
+			"Mu",
+			"EWIEGA46WW/moc_qsql_mysql_p.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/QMYSQLDriverPlugin_autogen/include",
+	"MOC_COMPILATION_FILE" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/QMYSQLDriverPlugin_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"NOMINMAX",
+		"QMYSQLDriverPlugin_EXPORTS",
+		"QT_CORE_LIB",
+		"QT_DEPRECATED_WARNINGS",
+		"QT_DISABLE_DEPRECATED_UP_TO=0x040800",
+		"QT_EXPLICIT_QFILE_CONSTRUCTION_FROM_PATH",
+		"QT_NO_CAST_FROM_ASCII",
+		"QT_NO_CAST_TO_ASCII",
+		"QT_NO_DEBUG",
+		"QT_NO_EXCEPTIONS",
+		"QT_NO_JAVA_STYLE_ITERATORS",
+		"QT_NO_NARROWING_CONVERSIONS_IN_CONNECT",
+		"QT_PLUGIN",
+		"QT_SQL_LIB",
+		"QT_WARN_DEPRECATED_UP_TO=0x070000",
+		"UNICODE",
+		"WIN32",
+		"WIN64",
+		"_CRT_SECURE_NO_WARNINGS",
+		"_ENABLE_EXTENDED_ALIGNED_STORAGE",
+		"_UNICODE",
+		"_WIN64"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql",
+		"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/include",
+		"E:/qt_creator/libs/libmysql/include",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtCore",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/mkspecs/win32-msvc",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtCore/6.5.3",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtCore/6.5.3/QtCore",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtSql/6.5.3",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtSql/6.5.3/QtSql",
+		"C:/Qt/Qt5.12/6.5.3/msvc2019_64/include/QtSql"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_GADGET_EXPORT",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : [],
+	"MOC_PREDEFS_FILE" : "",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 6,
+	"PARSE_CACHE_FILE" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/QMYSQLDriverPlugin_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "C:/Qt/Qt5.12/6.5.3/msvc2019_64/./bin/moc.exe",
+	"QT_UIC_EXECUTABLE" : "",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 5,
+	"SETTINGS_FILE" : "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/QMYSQLDriverPlugin_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/main.cpp",
+			"Mu",
+			null
+		],
+		[
+			"C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/qsql_mysql.cpp",
+			"Mu",
+			null
+		]
+	],
+	"VERBOSITY" : 0
+}

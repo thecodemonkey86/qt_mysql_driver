@@ -1,6 +1,6 @@
-# Generated from sqldrivers.pro.
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
 
-# special case begin
 cmake_minimum_required(VERSION 3.16)
 if (NOT CMAKE_PROJECT_NAME STREQUAL "QtBase" AND NOT CMAKE_PROJECT_NAME STREQUAL "Qt")
     include(.cmake.conf)
@@ -75,4 +75,3 @@ endif()
 if(NOT CMAKE_PROJECT_NAME STREQUAL "QtBase" AND NOT CMAKE_PROJECT_NAME STREQUAL "Qt")
     qt_print_feature_summary()
 endif()
-# special case end

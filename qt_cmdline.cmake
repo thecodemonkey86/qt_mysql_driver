@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
 qt_commandline_option(mysql_config TYPE string)
 qt_commandline_option(psql_config TYPE string)
 qt_commandline_option(sqlite TYPE enum NAME system-sqlite MAPPING qt no system yes)
