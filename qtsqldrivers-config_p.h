@@ -14,3 +14,5 @@
 
 #define QT_FEATURE_system_sqlite -1
 
+#define QT_FEATURE_sql_mimer -1
+

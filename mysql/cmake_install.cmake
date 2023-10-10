@@ -1,8 +1,8 @@
-# Install script for directory: C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql
+# Install script for directory: C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/mysql
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Qt/Qt5.12/6.5.3/msvc2019_64")
+  set(CMAKE_INSTALL_PREFIX "C:/Qt/Qt5.12/6.6.0/msvc2019_64")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Release")
+    set(CMAKE_INSTALL_CONFIG_NAME "RelWithDebInfo")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -39,21 +39,25 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Devel" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES
-    "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfig.cmake"
-    "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfigVersion.cmake"
-    "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfigVersionImpl.cmake"
+    "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfig.cmake"
+    "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfigVersion.cmake"
+    "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginConfigVersionImpl.cmake"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE MODULE FILES "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysql.dll")
+  if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE MODULE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysql.dll")
+  elseif(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE MODULE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysqld.dll")
+  endif()
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginTargets.cmake")
     file(DIFFERENT _cmake_export_file_changed FILES
          "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginTargets.cmake"
-         "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets.cmake")
+         "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets.cmake")
     if(_cmake_export_file_changed)
       file(GLOB _cmake_old_config_files "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginTargets-*.cmake")
       if(_cmake_old_config_files)
@@ -66,17 +70,24 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
     endif()
     unset(_cmake_export_file_changed)
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets.cmake")
-  if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets-release.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets.cmake")
+  if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets-debug.cmake")
+  endif()
+  if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/mysql/CMakeFiles/Export/6daf95e385d7cc8ad37a0af677fcce5d/Qt6QMYSQLDriverPluginTargets-relwithdebinfo.cmake")
   endif()
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE FILE OPTIONAL FILES "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysql.pdb")
+  if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE FILE OPTIONAL FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysql.pdb")
+  elseif(CMAKE_INSTALL_CONFIG_NAME MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./plugins/sqldrivers" TYPE FILE OPTIONAL FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/plugins/sqldrivers/qsqlmysqld.pdb")
+  endif()
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.5.3/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginAdditionalTargetInfo.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/Qt6Sql" TYPE FILE FILES "C:/Qt/Qt5.12/6.6.0/Src/qtbase/src/plugins/sqldrivers/lib/cmake/Qt6Sql/Qt6QMYSQLDriverPluginAdditionalTargetInfo.cmake")
 endif()
 

@@ -8,3 +8,4 @@ Qt Sql Drivers:
   PostgreSQL ............................. yes
   SQLite ................................. yes
     Using system provided SQLite ......... no
+  Mimer .................................. no

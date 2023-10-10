@@ -215,6 +215,7 @@ static QMetaType qDecodeMYSQLType(enum_field_types mysqltype, uint flags)
     case MYSQL_TYPE_YEAR:
         type = QMetaType::Int;
         break;
+    case MYSQL_TYPE_BIT:
     case MYSQL_TYPE_LONGLONG:
         type = (flags & UNSIGNED_FLAG) ? QMetaType::ULongLong : QMetaType::LongLong;
         break;
@@ -301,6 +302,11 @@ static bool qIsInteger(int t)
         || t == QMetaType::Short || t == QMetaType::UShort
         || t == QMetaType::Int || t == QMetaType::UInt
         || t == QMetaType::LongLong || t == QMetaType::ULongLong;
+}
+
+static inline bool qIsBitfield(enum_field_types type)
+{
+    return type == MYSQL_TYPE_BIT;
 }
 
 void QMYSQLResultPrivate::bindBlobs()
@@ -519,6 +525,20 @@ bool QMYSQLResult::fetchFirst()
     return fetch(0);
 }
 
+static inline uint64_t
+qDecodeBitfield(const QMYSQLResultPrivate::QMyField &f, const char *outField)
+{
+    // byte-aligned length
+    const auto numBytes = (f.myField->length + 7) / 8;
+    uint64_t val = 0;
+    for (unsigned long i = 0; i < numBytes && outField; ++i) {
+        uint64_t tmp = static_cast<uint8_t>(outField[i]);
+        val <<= 8;
+        val |= tmp;
+    }
+    return val;
+}
+
 QVariant QMYSQLResult::data(int field)
 {
     Q_D(QMYSQLResult);
@@ -536,8 +556,9 @@ QVariant QMYSQLResult::data(int field)
     if (d->preparedQuery) {
         if (f.nullIndicator)
             return QVariant(f.type);
-
-        if (qIsInteger(f.type.id())) {
+        if (qIsBitfield(f.myField->type)) {
+            return QVariant::fromValue(qDecodeBitfield(f, f.outField));
+        } else if (qIsInteger(f.type.id())) {
             QVariant variant(f.type, f.outField);
             // we never want to return char variants here, see QTBUG-53397
             if (f.type.id() == QMetaType::UChar)
@@ -568,6 +589,9 @@ QVariant QMYSQLResult::data(int field)
             // NULL value
             return QVariant(f.type);
         }
+
+        if (qIsBitfield(f.myField->type))
+            return QVariant::fromValue(qDecodeBitfield(f, d->row[field]));
 
         fieldLength = mysql_fetch_lengths(d->result)[field];
 
@@ -677,6 +701,7 @@ bool QMYSQLResult::reset (const QString& query)
         for(int i = 0; i < numFields; i++) {
             MYSQL_FIELD* field = mysql_fetch_field_direct(d->result, i);
             d->fields[i].type = qDecodeMYSQLType(field->type, field->flags);
+            d->fields[i].myField = field;
         }
         setAt(QSql::BeforeFirstRow);
     }
@@ -794,6 +819,7 @@ bool QMYSQLResult::nextResult()
         for (unsigned int i = 0; i < numFields; i++) {
             MYSQL_FIELD *field = mysql_fetch_field_direct(d->result, i);
             d->fields[i].type = qDecodeMYSQLType(field->type, field->flags);
+            d->fields[i].myField = field;
         }
     }
 
@@ -1178,6 +1204,45 @@ static bool setOptionBool(MYSQL *mysql, mysql_option option, QStringView v)
     return mysql_options(mysql, option, &val) == 0;
 }
 
+// MYSQL_OPT_SSL_MODE was introduced with MySQL 5.7.11
+#if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID >= 50711 && !defined(MARIADB_VERSION_ID)
+static bool setOptionSslMode(MYSQL *mysql, mysql_option option, QStringView v)
+{
+    mysql_ssl_mode sslMode = SSL_MODE_DISABLED;
+    if (v == "DISABLED"_L1 || v == "SSL_MODE_DISABLED"_L1)
+        sslMode = SSL_MODE_DISABLED;
+    else if (v == "PREFERRED"_L1 || v == "SSL_MODE_PREFERRED"_L1)
+        sslMode = SSL_MODE_PREFERRED;
+    else if (v == "REQUIRED"_L1 || v == "SSL_MODE_REQUIRED"_L1)
+        sslMode = SSL_MODE_REQUIRED;
+    else if (v == "VERIFY_CA"_L1 || v == "SSL_MODE_VERIFY_CA"_L1)
+        sslMode = SSL_MODE_VERIFY_CA;
+    else if (v == "VERIFY_IDENTITY"_L1 || v == "SSL_MODE_VERIFY_IDENTITY"_L1)
+        sslMode = SSL_MODE_VERIFY_IDENTITY;
+    else
+        qWarning() << "Unknown ssl mode '" << v << "' - using SSL_MODE_DISABLED";
+    return mysql_options(mysql, option, &sslMode) == 0;
+}
+#endif
+
+static bool setOptionProtocol(MYSQL *mysql, mysql_option option, QStringView v)
+{
+    mysql_protocol_type proto = MYSQL_PROTOCOL_DEFAULT;
+    if (v == "TCP"_L1 || v == "MYSQL_PROTOCOL_TCP"_L1)
+        proto = MYSQL_PROTOCOL_TCP;
+    else if (v == "SOCKET"_L1 || v == "MYSQL_PROTOCOL_SOCKET"_L1)
+        proto = MYSQL_PROTOCOL_SOCKET;
+    else if (v == "PIPE"_L1 || v == "MYSQL_PROTOCOL_PIPE"_L1)
+        proto = MYSQL_PROTOCOL_PIPE;
+    else if (v == "MEMORY"_L1 || v == "MYSQL_PROTOCOL_MEMORY"_L1)
+        proto = MYSQL_PROTOCOL_MEMORY;
+    else if (v == "DEFAULT"_L1 || v == "MYSQL_PROTOCOL_DEFAULT"_L1)
+        proto = MYSQL_PROTOCOL_DEFAULT;
+    else
+        qWarning() << "Unknown protocol '" << v << "' - using MYSQL_PROTOCOL_DEFAULT";
+    return mysql_options(mysql, option, &proto) == 0;
+}
+
 bool QMYSQLDriver::open(const QString &db,
                         const QString &user,
                         const QString &password,
@@ -1215,11 +1280,19 @@ bool QMYSQLDriver::open(const QString &db,
         {"MYSQL_OPT_SSL_CIPHER"_L1,      MYSQL_OPT_SSL_CIPHER,      setOptionString},
         {"MYSQL_OPT_SSL_CRL"_L1,         MYSQL_OPT_SSL_CRL,         setOptionString},
         {"MYSQL_OPT_SSL_CRLPATH"_L1,     MYSQL_OPT_SSL_CRLPATH,     setOptionString},
+#if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID >= 50710
+        {"MYSQL_OPT_TLS_VERSION"_L1,     MYSQL_OPT_TLS_VERSION,     setOptionString},
+#endif
+#if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID >= 50711 && !defined(MARIADB_VERSION_ID)
+        {"MYSQL_OPT_SSL_MODE"_L1,        MYSQL_OPT_SSL_MODE,        setOptionSslMode},
+#endif
         {"MYSQL_OPT_CONNECT_TIMEOUT"_L1, MYSQL_OPT_CONNECT_TIMEOUT, setOptionInt},
         {"MYSQL_OPT_READ_TIMEOUT"_L1,    MYSQL_OPT_READ_TIMEOUT,    setOptionInt},
         {"MYSQL_OPT_WRITE_TIMEOUT"_L1,   MYSQL_OPT_WRITE_TIMEOUT,   setOptionInt},
         {"MYSQL_OPT_RECONNECT"_L1,       MYSQL_OPT_RECONNECT,       setOptionBool},
         {"MYSQL_OPT_LOCAL_INFILE"_L1,    MYSQL_OPT_LOCAL_INFILE,    setOptionInt},
+        {"MYSQL_OPT_PROTOCOL"_L1,        MYSQL_OPT_PROTOCOL,        setOptionProtocol},
+        {"MYSQL_SHARED_MEMORY_BASE_NAME"_L1, MYSQL_SHARED_MEMORY_BASE_NAME, setOptionString},
     };
     auto trySetOption = [&](const QStringView &key, const QStringView &value) -> bool {
       for (const mysqloptions &opt : options) {
