@@ -14,7 +14,7 @@ This is helpful to you? If you wish you have the possibility to support me by do
 <a href="https://www.paypal.com/donate/?hosted_button_id=2K7H59EFMSRDU"><img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/02524397-e7f7-47ca-be6b-7c8d3a3b5b32"></a>
 
 <b>
-Latest Qt6 version: Download for Qt 6.5.3 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.5.3">here</a><br>
+Latest Qt6 version: Download for Qt 6.6.0 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.6.0">here</a><br>
 Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a><br>
 For Android see 3rd party repository https://github.com/sayyyed/qt_android_mysql_driver/releases/tag/qt_mysql_driver_for_android
 </b>
@@ -44,12 +44,10 @@ Prerequisites:
 
 ```console
 set PATH=%PATH%;C:\Qt\Tools\CMake_64\bin;C:\Qt\Tools\Ninja
-cd C:\Qt\6.4.0\Src\qtbase\src\plugins\sqldrivers
+C:
+cd C:\Qt\6.6.0\Src\qtbase\src\plugins\sqldrivers
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-call C:\Qt\6.4.0\msvc2019_64\bin\qt-cmake.bat -G "Ninja" . -DMySQL_INCLUDE_DIR="C:\mysql_8.0.29\include" -DMySQL_LIBRARY="C:\mysql_8.0.29\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.4.0\msvc2019_64"
-ninja
-ninja install
-call C:\Qt\6.4.0\msvc2019_64\bin\qt-cmake.bat -G "Ninja" . -DMySQL_INCLUDE_DIR="C:\mysql_8.0.29\include" -DMySQL_LIBRARY="C:\mysql_8.0.29\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.4.0\msvc2019_64" -DCMAKE_BUILD_TYPE=Release
+call C:\Qt\6.6.0\msvc2019_64\bin\qt-cmake.bat -G "Ninja Multi-Config" . -DMySQL_INCLUDE_DIR="E:\qt_creator\libs\libmysql\include" -DMySQL_LIBRARY="E:\qt_creator\libs\libmysql\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.6.0\msvc2019_64" -DCMAKE_CONFIGURATION_TYPES=Release;Debug
 ninja
 ninja install
 pause
