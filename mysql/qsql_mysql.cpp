@@ -223,7 +223,7 @@ public:
     struct QMyField
     {
         char *outField = nullptr;
-        MYSQL_FIELD *myField = nullptr;
+        const MYSQL_FIELD *myField = nullptr;
         QMetaType::Type type = QMetaType::UnknownType;
         my_bool nullIndicator = false;
         ulong bufLength = 0ul;
@@ -309,6 +309,7 @@ static QMetaType::Type qDecodeMYSQLType(int mysqltype, uint flags)
     case FIELD_TYPE_MEDIUM_BLOB :
     case FIELD_TYPE_LONG_BLOB :
     case FIELD_TYPE_GEOMETRY :
+    case MYSQL_TYPE_JSON :
         type = (flags & BINARY_FLAG) ? QMetaType::QByteArray : QMetaType::QString;
         break;
     default:
@@ -347,7 +348,8 @@ static bool qIsBlob(int t)
     return t == MYSQL_TYPE_TINY_BLOB
            || t == MYSQL_TYPE_BLOB
            || t == MYSQL_TYPE_MEDIUM_BLOB
-           || t == MYSQL_TYPE_LONG_BLOB;
+           || t == MYSQL_TYPE_LONG_BLOB
+           || t == MYSQL_TYPE_JSON;
 }
 
 static bool qIsInteger(int t)
@@ -360,12 +362,9 @@ static bool qIsInteger(int t)
 
 void QMYSQLResultPrivate::bindBlobs()
 {
-    int i;
-    MYSQL_FIELD *fieldInfo;
     MYSQL_BIND *bind;
-
-    for(i = 0; i < fields.count(); ++i) {
-        fieldInfo = fields.at(i).myField;
+    for (int i = 0; i < fields.count(); ++i) {
+        const MYSQL_FIELD *fieldInfo = fields.at(i).myField;
         if (qIsBlob(inBinds[i].buffer_type) && meta && fieldInfo) {
             bind = &inBinds[i];
             bind->buffer_length = fieldInfo->max_length;
@@ -378,8 +377,6 @@ void QMYSQLResultPrivate::bindBlobs()
 
 bool QMYSQLResultPrivate::bindInValues()
 {
-    MYSQL_BIND *bind;
-    char *field;
     int i = 0;
 
     if (!meta)
@@ -392,35 +389,34 @@ bool QMYSQLResultPrivate::bindInValues()
     inBinds = new MYSQL_BIND[fields.size()];
     memset(inBinds, 0, fields.size() * sizeof(MYSQL_BIND));
 
-    MYSQL_FIELD *fieldInfo;
+    const MYSQL_FIELD *fieldInfo;
 
     while((fieldInfo = mysql_fetch_field(meta))) {
+        MYSQL_BIND *bind = &inBinds[i];
+
         QMyField &f = fields[i];
         f.myField = fieldInfo;
-
+        bind->buffer_length = f.bufLength = fieldInfo->length + 1;
+        bind->buffer_type = fieldInfo->type;
         f.type = qDecodeMYSQLType(fieldInfo->type, fieldInfo->flags);
         if (qIsBlob(fieldInfo->type)) {
             // the size of a blob-field is available as soon as we call
             // mysql_stmt_store_result()
             // after mysql_stmt_exec() in QMYSQLResult::exec()
-            fieldInfo->length = 0;
+            bind->buffer_length = f.bufLength = 0;
             hasBlobs = true;
         } else if (qIsInteger(f.type)) {
-            fieldInfo->length = 8;
+            bind->buffer_length = f.bufLength = 8;
         } else {
-            fieldInfo->type = MYSQL_TYPE_STRING;
+            bind->buffer_type = MYSQL_TYPE_STRING;
         }
-        bind = &inBinds[i];
-        field = new char[fieldInfo->length + 1];
-        memset(field, 0, fieldInfo->length + 1);
 
-        bind->buffer_type = fieldInfo->type;
-        bind->buffer = field;
-        bind->buffer_length = f.bufLength = fieldInfo->length + 1;
         bind->is_null = &f.nullIndicator;
         bind->length = &f.bufLength;
         bind->is_unsigned = fieldInfo->flags & UNSIGNED_FLAG ? 1 : 0;
-        f.outField=field;
+
+        char *field = new char[bind->buffer_length + 1]{};
+        bind->buffer = f.outField = field;
 
         ++i;
     }
@@ -1597,3 +1593,5 @@ bool QMYSQLDriver::isIdentifierEscaped(const QString &identifier, IdentifierType
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qsql_mysql_p.cpp"
