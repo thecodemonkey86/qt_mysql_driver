@@ -14,7 +14,7 @@ This is helpful to you? If you wish you have the possibility to support me by do
 <a href="https://www.paypal.com/donate/?hosted_button_id=2K7H59EFMSRDU"><img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/02524397-e7f7-47ca-be6b-7c8d3a3b5b32"></a>
 
 <b>
-Latest Qt6 version: Download for Qt 6.6.1 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.6.1">here</a><br>
+Latest Qt6 version: Download for Qt 6.6.2 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.6.2">here</a><br>
 Latest open source Qt5 version: Download for Qt 5.15.7 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_5.15.7">here</a><br>
 For Android see 3rd party repository https://github.com/sayyyed/qt_android_mysql_driver/releases/tag/qt_mysql_driver_for_android
 </b>
