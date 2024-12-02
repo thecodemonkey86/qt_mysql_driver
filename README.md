@@ -14,7 +14,7 @@ This is helpful to you? If you wish, you have the possibility to support me by d
 <a href="https://www.paypal.com/donate/?hosted_button_id=2K7H59EFMSRDU"><img src="https://github.com/thecodemonkey86/qt_mysql_driver/assets/11927938/02524397-e7f7-47ca-be6b-7c8d3a3b5b32"></a>
 
 <b>
-Latest Qt6 version: Download for Qt 6.8.0 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.8.0">here</a><br>
+Latest Qt6 version: Download for Qt 6.8.1 <a href="https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/qmysql_6.8.1">here</a><br>
 For Android see 3rd party repository https://github.com/sayyyed/qt_android_mysql_driver/releases/tag/qt_mysql_driver_for_android
 </b>
 <br>
@@ -44,9 +44,9 @@ Prerequisites:
 ```console
 set PATH=%PATH%;C:\Qt\Tools\CMake_64\bin;C:\Qt\Tools\Ninja
 C:
-cd C:\Qt\6.6.0\Src\qtbase\src\plugins\sqldrivers
+cd C:\Qt\6.8.1\Src\qtbase\src\plugins\sqldrivers
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-call C:\Qt\6.6.0\msvc2019_64\bin\qt-cmake.bat -G "Ninja Multi-Config" . -DMySQL_INCLUDE_DIR="E:\qt_creator\libs\libmysql\include" -DMySQL_LIBRARY="E:\qt_creator\libs\libmysql\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.6.0\msvc2019_64" -DCMAKE_CONFIGURATION_TYPES=Release;Debug
+call C:\Qt\6.8.1\msvc2022_64\bin\qt-cmake.bat -G "Ninja Multi-Config" . -DMySQL_INCLUDE_DIR="E:\qt_creator\libs\libmysql\include" -DMySQL_LIBRARY="E:\qt_creator\libs\libmysql\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.8.1\msvc2022_64" -DCMAKE_CONFIGURATION_TYPES=Release;Debug  -DQT_GENERATE_SBOM=OFF
 ninja
 ninja install
 pause
@@ -59,10 +59,11 @@ Prerequisites:
 2. Install MySQL library, e.g. by using [Oracle's Installer](https://dev.mysql.com/downloads/installer/) or use the zip file from [here](https://github.com/thecodemonkey86/qt_mysql_driver/releases/tag/libmysql)
 
 ```console
-set PATH=%PATH%;C:\Qt\Tools\mingw1120_64\bin;C:\Qt\Tools\CMake_64\bin
-cd C:\Qt\6.4.0\Src\qtbase\src\plugins\sqldrivers
-call C:\Qt\6.4.0\mingw_64\bin\qt-cmake.bat -G "MinGW Makefiles" . -DMySQL_INCLUDE_DIR="C:\mysql_8.0.29\include" -DMySQL_LIBRARY="C:\mysql_8.0.29\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.4.0\mingw_64" -DCMAKE_C_COMPILER="gcc.exe" -DCMAKE_CXX_COMPILER="g++.exe"
-mingw32-make
-mingw32-make install
+set PATH=%PATH%;C:\Qt\Tools\mingw1310_64\bin
+C:
+cd C:\Qt\6.8.1\Src\qtbase\src\plugins\sqldrivers
+call C:\Qt\6.8.1\mingw_64\bin\qt-cmake.bat -G "Ninja Multi-Config" . -DMySQL_INCLUDE_DIR="E:\qt_creator\libs\qmysql_driver\mysql-connector-c-6.1.11-winx64\include" -DMySQL_LIBRARY="E:\qt_creator\libs\qmysql_driver\mysql-connector-c-6.1.11-winx64\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.8.1\mingw_64" -DCMAKE_C_COMPILER="gcc.exe" -DCMAKE_CXX_COMPILER="g++.exe" -DCMAKE_CONFIGURATION_TYPES=Release;Debug   -DQT_GENERATE_SBOM=OFF
+ninja
+ninja install
 pause
 ```
