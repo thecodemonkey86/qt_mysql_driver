@@ -22,7 +22,6 @@ if(NOT PROJECT_NAME STREQUAL "QtBase" AND NOT PROJECT_NAME STREQUAL "Qt")
         BuildInternals
         Core
         Sql
-		Core5Compat
     )
     # Use qtbase license files for standalone builds.
     set(QT_SBOM_LICENSE_DIRS "${PROJECT_SOURCE_DIR}/../../../LICENSES")
