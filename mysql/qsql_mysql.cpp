@@ -1094,14 +1094,14 @@ static void qLibraryInit()
     }
 #endif // Q_NO_MYSQL_EMBEDDED
 
-#if defined(MARIADB_BASE_VERSION) || defined(MARIADB_VERSION_ID)
+#if defined(MARIADB_PACKAGE_VERSION_ID)
     qAddPostRoutine([]() { mysql_server_end(); });
 #endif
 }
 
 static void qLibraryEnd()
 {
-#if !defined(MARIADB_BASE_VERSION) && !defined(MARIADB_VERSION_ID)
+#if !defined(MARIADB_PACKAGE_VERSION_ID)
 # if !defined(Q_NO_MYSQL_EMBEDDED)
     mysql_library_end();
 # endif
@@ -1360,7 +1360,7 @@ bool QMYSQLDriver::open(const QString &db,
 
     // try utf8 with non BMP first, utf8 (BMP only) if that fails
     static const char wanted_charsets[][8] = { "utf8mb4", "utf8" };
-#ifdef MARIADB_VERSION_ID
+#if defined(MARIADB_PACKAGE_VERSION_ID)
     MARIADB_CHARSET_INFO *cs = nullptr;
     for (const char *p : wanted_charsets) {
         cs = mariadb_get_charset_by_name(p);
@@ -1512,7 +1512,7 @@ QSqlRecord QMYSQLDriver::record(const QString &tablename) const
             + d->dbName + "' AND table_name = '%1'"_L1;
     const auto baTableName = tablename.toUtf8();
     QVarLengthArray<char> tableNameQuoted(baTableName.size() * 2 + 1);
-#if defined(MARIADB_VERSION_ID)
+#if defined(MARIADB_PACKAGE_VERSION_ID)
     const auto len = mysql_real_escape_string(d->mysql, tableNameQuoted.data(),
                                               baTableName.data(), baTableName.size());
 #else
@@ -1614,7 +1614,7 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
             }
             Q_FALLTHROUGH();
         case QMetaType::QDateTime:
-            if (QDateTime dt = field.value().toDateTime(); dt.isValid()) {
+            if (QDateTime dt = field.value().toDateTime().toUTC(); dt.isValid()) {
                 // MySQL format doesn't like the "Z" at the end, but does allow
                 // "+00:00" starting in version 8.0.19. However, if we got here,
                 // it's because the MySQL server is too old for prepared queries
@@ -1622,7 +1622,7 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
                 r = u'\'' +
                         dt.date().toString(Qt::ISODate) +
                         u'T' +
-                        dt.time().toString(Qt::ISODate) +
+                        dt.time().toString(Qt::ISODateWithMs) +
                         u'\'';
             }
             break;
