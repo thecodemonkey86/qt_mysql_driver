@@ -13,12 +13,22 @@ set_property(CACHE INPUT_sqlite PROPERTY STRINGS undefined qt system)
 
 #### Libraries
 
+qt_feature_vcpkg_scope(sql)
 qt_find_package(DB2 MODULE PROVIDED_TARGETS DB2::DB2 MODULE_NAME sqldrivers QMAKE_LIB db2)
-qt_find_package(MySQL MODULE PROVIDED_TARGETS MySQL::MySQL MODULE_NAME sqldrivers QMAKE_LIB mysql)
-qt_find_package(PostgreSQL MODULE PROVIDED_TARGETS PostgreSQL::PostgreSQL MODULE_NAME sqldrivers QMAKE_LIB psql)
+qt_find_package(MySQL MODULE PROVIDED_TARGETS MySQL::MySQL MODULE_NAME sqldrivers QMAKE_LIB mysql
+    VCPKG_PORT libmysql
+    VCPKG_ADD_TO_FEATURE sql-mysql
+)
+qt_find_package(PostgreSQL MODULE PROVIDED_TARGETS PostgreSQL::PostgreSQL MODULE_NAME sqldrivers QMAKE_LIB psql
+    VCPKG_PORT libpq
+    VCPKG_ADD_TO_FEATURE sql-psql
+)
 qt_find_package(Oracle MODULE PROVIDED_TARGETS Oracle::OCI MODULE_NAME sqldrivers QMAKE_LIB oci)
 qt_find_package(ODBC PROVIDED_TARGETS ODBC::ODBC MODULE_NAME sqldrivers QMAKE_LIB odbc)
-qt_find_package(SQLite3 PROVIDED_TARGETS SQLite::SQLite3 MODULE_NAME sqldrivers QMAKE_LIB sqlite3)
+qt_find_package(SQLite3 PROVIDED_TARGETS SQLite::SQLite3 MODULE_NAME sqldrivers QMAKE_LIB sqlite3
+    VCPKG_PORT sqlite3
+    VCPKG_ADD_TO_FEATURE sql-sqlite
+)
 qt_find_package(Interbase MODULE
     PROVIDED_TARGETS Interbase::Interbase MODULE_NAME sqldrivers QMAKE_LIB ibase) # special case
 qt_find_package(Mimer MODULE PROVIDED_TARGETS MimerSQL::MimerSQL MODULE_NAME sqldrivers QMAKE_LIB mimer)
@@ -60,6 +70,7 @@ qt_feature("sql-psql" PRIVATE
 qt_feature("sql-sqlite" PRIVATE
     LABEL "SQLite"
     CONDITION QT_FEATURE_datestring
+    VCPKG_DEFAULT
 )
 qt_feature("system-sqlite" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system provided SQLite"
